@@ -11,6 +11,9 @@ function Main(){
     //라우터
     const navigate = useNavigate();
 
+    //정상 TID로 검색했는데 이력이 없는 경우 빈 테이블 출력하는 플래그
+    const [termFlag, setTermFlag] = useState(false);
+
     //검색할 TID 설정
     const [terminalID, setTerminalId] = useState("");
     const searchTerminalId = (e) => {
@@ -21,6 +24,7 @@ function Main(){
     const [terminalData, setTerminalData] = useRecoilState(TerminalInfoAtom)
     const terminalLoadable = useRecoilValueLoadable(TerminalInfoSelector(terminalID))
 
+    //단말기 상태 기본 데이터(atom) 및 검색 - useRecoilValueLoadable는 비동기 작업 단계를 성공/로딩중/에러로 관리함
     const [terminalStateData, setStateTerminalData] = useRecoilState(TerminalStateAtom)
     const terminalStateLoadable = useRecoilValueLoadable(TerminalStateSelector(terminalID))
 
@@ -37,10 +41,15 @@ function Main(){
             console.error(terminalLoadable.contents);
         }
 
+
+
         //단말기 상태
         if (terminalStateLoadable.state === 'hasValue') {
             console.log("terminalStateLoadable.contents)==" + terminalStateLoadable.contents);
             setStateTerminalData(terminalStateLoadable.contents);
+            if(terminalStateLoadable.contents != ""){
+                setTermFlag(true);
+            }
         } else if (terminalStateLoadable.state === 'loading') {
             console.log('Loading...');
         } else if (terminalStateLoadable.state === 'hasError') {
@@ -61,11 +70,14 @@ function Main(){
             <button onClick={handleClick}>검색</button>
 
             <div>
-                {terminalData != null && <TerminalInfo terminalData={terminalData}/>}
+                {terminalData != null && <TerminalInfo key={terminalData.code} terminalData={terminalData}/>}
             </div>
 
             <div>
-                {terminalStateData != null && <TerminalState terminalStateData={terminalStateData}/>}
+                {/*검색 하면 빈 테이블은 생성되게 조건을 2개 설정*/}
+                {terminalStateData != null && termFlag && (
+                    <TerminalState key={terminalData.code} terminalStateData={terminalStateData} />
+                )}
             </div>
 
             <div className='buttonBox'>

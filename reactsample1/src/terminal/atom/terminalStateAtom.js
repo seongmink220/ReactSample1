@@ -3,7 +3,7 @@ import {atom, selectorFamily} from "recoil";
 
 export const TerminalStateAtom = atom({
     key: "TerminalStateAtom",
-    default: null,
+    default: [],
 });
 
 export const TerminalStateSelector = selectorFamily( {
