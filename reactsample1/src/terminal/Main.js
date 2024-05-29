@@ -41,8 +41,6 @@ function Main(){
             console.error(terminalLoadable.contents);
         }
 
-
-
         //단말기 상태
         if (terminalStateLoadable.state === 'hasValue') {
             console.log("terminalStateLoadable.contents)==" + terminalStateLoadable.contents);
